@@ -46,7 +46,7 @@ class QueryListRow extends React.Component {
         </p>
         <p>
           <a href={tableUrl} target="_blank" rel="noopener noreferrer">
-            table
+            run
           </a>{' '}
           <a href={chartUrl} target="_blank" rel="noopener noreferrer">
             chart

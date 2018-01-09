@@ -52,6 +52,7 @@ var Query = function(data) {
   this.tags = data.tags
   this.connectionId = data.connectionId
   this.queryText = data.queryText
+  this.queryParam = data.queryParam
   this.chartConfiguration = data.chartConfiguration
   this.createdDate = data.createdDate
   this.createdBy = data.createdBy

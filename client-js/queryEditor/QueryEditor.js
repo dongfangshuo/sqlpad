@@ -381,14 +381,26 @@ class QueryEditor extends React.Component {
                 maxSize={-100}
                 onChange={this.handleSqlPaneResize}
               >
-                <SqlEditor
-                  config={config}
-                  value={query.queryText}
-                  onChange={this.handleQueryTextChange}
-                  ref={ref => {
-                    this.editor = ref ? ref.editor : null
-                  }}
-                />
+                <SplitPane
+                  split="horizontal"
+                  minSize={100}
+                  defaultSize={'30%'}
+                  maxSize={-100}
+                  onChange={this.handleSqlPaneResize}
+                >
+                  <div>
+                    <span>query param</span>
+                  </div>
+                  <SqlEditor
+                    config={config}
+                    value={query.queryText}
+                    onChange={this.handleQueryTextChange}
+                    ref={ref => {
+                      this.editor = ref ? ref.editor : null
+                    }}
+                  />
+                </SplitPane>
+
                 <div>
                   <QueryResultHeader
                     {...this.props}
