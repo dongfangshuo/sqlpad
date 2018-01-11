@@ -30,6 +30,15 @@ var schema = {
   queryText: Joi.string()
     .optional()
     .empty(''),
+  parameter: Joi.array()
+    .items(
+      Joi.object({
+        number1: Joi.string().required(),
+        number2: Joi.string().required(),
+        number3: Joi.string().required()
+      })
+    )
+    .optional(),
   chartConfiguration: Joi.object({
     chartType: Joi.string()
       .optional()
@@ -52,7 +61,7 @@ var Query = function(data) {
   this.tags = data.tags
   this.connectionId = data.connectionId
   this.queryText = data.queryText
-  this.queryParam = data.queryParam
+  this.parameter = data.parameter
   this.chartConfiguration = data.chartConfiguration
   this.createdDate = data.createdDate
   this.createdBy = data.createdBy

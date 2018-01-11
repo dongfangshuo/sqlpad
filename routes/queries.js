@@ -118,7 +118,8 @@ router.post('/api/queries', mustBeAuthenticated, function(req, res) {
     queryText: req.body.queryText,
     chartConfiguration: req.body.chartConfiguration,
     createdBy: req.user.email,
-    modifiedBy: req.user.email
+    modifiedBy: req.user.email,
+    parameter: req.body.parameter
   })
   query.save(function(err, newQuery) {
     if (err) {
@@ -155,6 +156,7 @@ router.put('/api/queries/:_id', mustBeAuthenticated, function(req, res) {
     query.queryText = req.body.queryText
     query.chartConfiguration = req.body.chartConfiguration
     query.modifiedBy = req.user.email
+    query.parameter = req.body.parameter
     query.save(function(err, newQuery) {
       if (err) {
         console.error(err)
