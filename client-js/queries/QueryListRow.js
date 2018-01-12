@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom'
 import Label from 'react-bootstrap/lib/Label'
 import DeleteButton from '../common/DeleteButton'
 import ListGroup from 'react-bootstrap/lib/ListGroup'
+import fetchJson from '../utilities/fetch-json'
 
 class QueryListRow extends React.Component {
   constructor() {
     super()
     this.state = {
-      id: ''
+      id: '',
+      currentUser: {}
     }
   }
 
@@ -22,22 +24,33 @@ class QueryListRow extends React.Component {
     handleQueryDelete(query._id)
   }
 
-  myChange = () => {
-    var tet = this.refs.myInput
-    this.setState({ id: tet.value })
-  }
-
   handExecClick = e => {
     const { config, query } = this.props
-    var tableUrl = `${config.baseUrl}/query-table/${query._id}?`
-    alert('sss')
-    e.href = tableUrl
+    var str = ''
+    query.parameter.map(param => {
+      str += param.number1 + '=' + this.refs[param.number1].value
+      str += '&'
+    })
+    console.log(str)
+    var tableUrl = `${config.baseUrl}/query-table/${query._id}?` + str
+    e.target.parentNode.setAttribute('href', tableUrl)
   }
 
-  inputModify = () => {}
+  componentDidMount() {
+    fetchJson('GET', '/api/app').then(json => {
+      this.setState({
+        currentUser: json.currentUser,
+        version: json.version,
+        passport: json.passport,
+        config: json.config
+      })
+    })
+  }
 
   render() {
     const { config, query, selectedQuery } = this.props
+    const { currentUser } = this.state
+
     const tagLabels = query.tags.map(tag => (
       <Label bsStyle="info" key={tag} style={{ marginLeft: 4 }}>
         {tag}
@@ -51,8 +64,8 @@ class QueryListRow extends React.Component {
           <input
             type="text"
             style={{ marginLeft: 5 }}
+            ref={param.number1}
             name={param.number1}
-            onChange={this.inputModify}
           />
         </div>
       )
@@ -66,7 +79,14 @@ class QueryListRow extends React.Component {
     if (selectedQuery && selectedQuery._id === query._id) {
       classNames.push('bg-near-white')
     }
-
+    var name
+    var del
+    if (currentUser.role == 'admin') {
+      name = <Link to={'/queries/' + query._id}>{query.name}</Link>
+      del = <DeleteButton onClick={this.handleDeleteClick} />
+    } else {
+      name = query.name
+    }
     return (
       <li
         onClick={this.onClick}
@@ -74,9 +94,7 @@ class QueryListRow extends React.Component {
         onMouseOver={this.handleMouseOver}
         onMouseOut={this.onMouseOut}
       >
-        <h4>
-          <Link to={'/queries/' + query._id}>{query.name}</Link>
-        </h4>
+        <h4>{name}</h4>
         <p>
           {query.createdBy} {tagLabels}
         </p>
@@ -86,13 +104,9 @@ class QueryListRow extends React.Component {
         <p>
           <a href={tableUrl} target="_blank" rel="noopener noreferrer">
             <button onClick={this.handExecClick}>执行</button>
-          </a>{' '}
-          {/*<a href={chartUrl} target="_blank" rel="noopener noreferrer">*/}
-          {/**/}
-          {/*</a>{' '}*/}
+          </a>
         </p>
-
-        <DeleteButton onClick={this.handleDeleteClick} />
+        {del}
       </li>
     )
   }
