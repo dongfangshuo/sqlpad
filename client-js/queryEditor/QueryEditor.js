@@ -166,7 +166,7 @@ class QueryEditor extends React.Component {
     for (let i = 0, j = instructions.length; i < j; i++) {
       let par = {
         number1: myparameterArray[i],
-        number2: typeArray[i] == 'volvo' ? 'string' : 'int',
+        number2: typeArray[i] === 'volvo' ? 'string' : 'int',
         number3: instructionsArray[i]
       }
       parArray.push(par)
@@ -553,16 +553,7 @@ class QueryEditor extends React.Component {
     return <ol>{listItems}</ol>
   }
   addList = () => {
-    // let parameter = {
-    //     numer1:this.refs.myparameter.value,
-    //     number2:this.refs.mytype.value === 'volvo' ? 'string' : 'int',
-    //     number3:this.refs.instructions.value
-    // }
-    // const { query } = this.state
-    // let array = query.parameter.push(parameter)
-    // this.setQueryState(parameter, query.parameter)
-
-    var row = this.state.listRow.push(
+    this.state.listRow.push(
       this.state.listRow[this.state.listRow.length - 1] + 1
     )
     this.setState({ listRow: this.state.listRow })

@@ -30,6 +30,7 @@ class QueryListRow extends React.Component {
     query.parameter.map(param => {
       str += param.number1 + '=' + this.refs[param.number1].value
       str += '&'
+      return param
     })
     console.log(str)
     var tableUrl = `${config.baseUrl}/query-table/${query._id}?` + str
@@ -73,7 +74,7 @@ class QueryListRow extends React.Component {
 
     const tableUrl = `${config.baseUrl}/query-table/${query._id}?id=${this.state
       .id}`
-    const chartUrl = `${config.baseUrl}/query-chart/${query._id}`
+    // const chartUrl = `${config.baseUrl}/query-chart/${query._id}`
 
     const classNames = ['list-group-item']
     if (selectedQuery && selectedQuery._id === query._id) {
@@ -81,7 +82,7 @@ class QueryListRow extends React.Component {
     }
     var name
     var del
-    if (currentUser.role == 'admin') {
+    if (currentUser.role === 'admin') {
       name = <Link to={'/queries/' + query._id}>{query.name}</Link>
       del = <DeleteButton onClick={this.handleDeleteClick} />
     } else {
