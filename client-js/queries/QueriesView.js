@@ -21,7 +21,6 @@ class QueriesView extends React.Component {
       : '',
     selectedSortBy: null,
     selectedQuery: null,
-      test:'test'
   }
 
   handleQueryListRowMouseOver = query => {
