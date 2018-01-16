@@ -20,7 +20,8 @@ class QueriesView extends React.Component {
       ? this.props.currentUser.email
       : '',
     selectedSortBy: null,
-    selectedQuery: null
+    selectedQuery: null,
+      test:'test'
   }
 
   handleQueryListRowMouseOver = query => {
