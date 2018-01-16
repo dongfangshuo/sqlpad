@@ -12,12 +12,12 @@ class QueryEditor extends React.Component {
     queryResult: undefined
   }
 
-  runQuery = queryId => {
+  runQuery = (queryId, queryStr) => {
     this.setState({
       isRunning: true,
       runQueryStartTime: new Date()
     })
-    fetchJson('GET', '/api/queries/' + queryId)
+    fetchJson('GET', '/api/queries/' + queryId + queryStr)
       .then(json => {
         if (json.error) console.error(json.error)
         this.setState({
@@ -25,7 +25,7 @@ class QueryEditor extends React.Component {
         })
       })
       .then(() => {
-        return fetchJson('GET', '/api/query-result/' + queryId)
+        return fetchJson('GET', '/api/query-result/' + queryId + queryStr)
       })
       .then(json => {
         if (json.error) console.error(json.error)
@@ -39,7 +39,8 @@ class QueryEditor extends React.Component {
 
   componentDidMount() {
     document.title = 'SQLPad'
-    this.runQuery(this.props.queryId)
+    console.log(this.props.params)
+    this.runQuery(this.props.queryId, this.props.queryStr)
   }
 
   render() {
