@@ -15,6 +15,7 @@ import SchemaSidebar from './SchemaSidebar.js'
 import VisSidebar from './VisSidebar'
 import SqlEditor from '../common/SqlEditor'
 import sqlFormatter from 'sql-formatter'
+import './style.css'
 
 const NEW_QUERY = {
   _id: '',
@@ -25,7 +26,9 @@ const NEW_QUERY = {
   chartConfiguration: {
     chartType: '',
     fields: {} // key value for chart
-  }
+  },
+  parameter: [],
+  parameterText: ''
 }
 
 class QueryEditor extends React.Component {
@@ -41,7 +44,8 @@ class QueryEditor extends React.Component {
     queryResult: undefined,
     runQueryStartTime: undefined,
     showModal: false,
-    showValidation: false
+    showValidation: false,
+    listRow: [1]
   }
 
   sqlpadTauChart = undefined
@@ -140,13 +144,48 @@ class QueryEditor extends React.Component {
   saveQuery = () => {
     const { query } = this.state
     const { config } = this.props
+
+    let myparameterArray = []
+    let typeArray = []
+    let instructionsArray = []
+    let parArray = []
+
+    let myparameter = document.getElementsByName('myparameter')
+    let mytype = document.getElementsByName('mytype')
+    let instructions = document.getElementsByName('instructions')
+
+    for (let i = 0, j = myparameter.length; i < j; i++) {
+      myparameterArray.push(myparameter[i].value)
+    }
+    for (let i = 0, j = mytype.length; i < j; i++) {
+      typeArray.push(mytype[i].value)
+    }
+    for (let i = 0, j = instructions.length; i < j; i++) {
+      instructionsArray.push(instructions[i].value)
+    }
+    for (let i = 0, j = instructions.length; i < j; i++) {
+      let par = {
+        number1: myparameterArray[i],
+        number2: typeArray[i] === 'volvo' ? 'string' : 'int',
+        number3: instructionsArray[i]
+      }
+      parArray.push(par)
+    }
+
+    this.setQueryState('parameter', parArray)
+
     if (!query.name) {
       Alert.error('Query name required')
       this.setState({ showValidation: true })
       return
     }
+    if (query.parameterText) {
+      var parameter = query.parameterText.split(' ')
+      this.setQueryState('parameter', parameter)
+    }
     this.setState({ isSaving: true })
     if (query._id) {
+      console.log(query)
       fetchJson('PUT', `/api/queries/${query._id}`, query).then(json => {
         const { error, query } = json
         if (error) {
@@ -156,6 +195,7 @@ class QueryEditor extends React.Component {
         }
         Alert.success('Query Saved')
         this.setState({ isSaving: false, unsavedChanges: false, query })
+        window.history.go(-1)
       })
     } else {
       fetchJson('POST', `/api/queries`, query).then(json => {
@@ -172,12 +212,16 @@ class QueryEditor extends React.Component {
         )
         Alert.success('Query Saved')
         this.setState({ isSaving: false, unsavedChanges: false, query })
+        window.history.go(-1)
       })
     }
   }
 
   setQueryState = (field, value) => {
     const { query } = this.state
+    if (!query[field] && query[field] === 'parameter') {
+      query.parameter = value
+    }
     query[field] = value
     this.setState({ query, unsavedChanges: true })
   }
@@ -216,6 +260,10 @@ class QueryEditor extends React.Component {
     if (this.sqlpadTauChart && this.sqlpadTauChart.chart) {
       this.sqlpadTauChart.chart.fire('exportTo', 'png')
     }
+  }
+
+  HandleQueryParameterChange = e => {
+    this.setQueryState('parameterText', e)
   }
 
   handleTabSelect = activeTabKey => this.setState({ activeTabKey })
@@ -341,7 +389,6 @@ class QueryEditor extends React.Component {
     } = this.state
 
     document.title = query.name || 'New Query'
-
     return (
       <div className="flex w-100" style={{ flexDirection: 'column' }}>
         <EditorNavBar
@@ -374,6 +421,7 @@ class QueryEditor extends React.Component {
                 connections={connections}
                 onConnectionChange={this.handleConnectionChange}
               />
+
               <SplitPane
                 split="horizontal"
                 minSize={100}
@@ -381,14 +429,22 @@ class QueryEditor extends React.Component {
                 maxSize={-100}
                 onChange={this.handleSqlPaneResize}
               >
-                <SqlEditor
-                  config={config}
-                  value={query.queryText}
-                  onChange={this.handleQueryTextChange}
-                  ref={ref => {
-                    this.editor = ref ? ref.editor : null
-                  }}
-                />
+                <SplitPane split="horizontal" minSize={150}>
+                  <div className={'auto'}>
+                    {this.renderList()}
+                    <div className={'button'} onClick={this.addList}>
+                      确认添加
+                    </div>
+                  </div>
+                  <SqlEditor
+                    config={config}
+                    value={query.queryText}
+                    onChange={this.handleQueryTextChange}
+                    ref={ref => {
+                      this.editor = ref ? ref.editor : null
+                    }}
+                  />
+                </SplitPane>
                 <div>
                   <QueryResultHeader
                     {...this.props}
@@ -468,6 +524,39 @@ class QueryEditor extends React.Component {
         />
       </div>
     )
+  }
+
+  renderList() {
+    const numbers = this.state.listRow
+    const listItems = numbers.map(number => (
+      <li style={{ marginTop: 10 }} key={number}>
+        <input
+          type="text"
+          style={{ width: 120 }}
+          placeholder="参数名称"
+          ref={'myparameter'}
+          name="myparameter"
+        />
+        <select style={{ marginLeft: 5 }} ref={'mytype'} name="mytype">
+          <option value="volvo">string</option>
+          <option value="saab">int</option>
+        </select>
+        <input
+          type="text"
+          style={{ width: 350, marginLeft: 5 }}
+          placeholder="参数说明"
+          ref={'instructions'}
+          name="instructions"
+        />
+      </li>
+    ))
+    return <ol>{listItems}</ol>
+  }
+  addList = () => {
+    this.state.listRow.push(
+      this.state.listRow[this.state.listRow.length - 1] + 1
+    )
+    this.setState({ listRow: this.state.listRow })
   }
 }
 

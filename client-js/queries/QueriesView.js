@@ -6,7 +6,6 @@ import fetchJson from '../utilities/fetch-json.js'
 import QueryList from './QueryList'
 import QueryPreview from './QueryPreview'
 import QueryListSidebar from './QueryListSidebar'
-
 class QueriesView extends React.Component {
   state = {
     queries: [],
@@ -20,7 +19,7 @@ class QueriesView extends React.Component {
       ? this.props.currentUser.email
       : '',
     selectedSortBy: null,
-    selectedQuery: null
+    selectedQuery: null,
   }
 
   handleQueryListRowMouseOver = query => {

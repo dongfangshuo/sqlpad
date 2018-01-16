@@ -29,12 +29,19 @@ router.get(
           error: 'Query not found for that Id (please save query first)'
         })
       }
+      var queryText = query.queryText.toString()
+      console.log('queryText:' + typeof queryText)
+      for (var propKey in req.query) {
+        queryText = queryText.replace('@' + propKey, req.query[propKey])
+      }
+      console.log('queryText:' + queryText)
       var data = {
         connectionId: query.connectionId,
         cacheKey: query._id,
         queryName: query.name,
-        queryText: query.queryText
+        queryText: queryText
       }
+
       getQueryResult(data, function(err, queryResult) {
         if (err) {
           console.error(err)

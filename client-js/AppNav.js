@@ -124,6 +124,14 @@ class App extends React.Component {
         )
       }
     }
+    var newQuery
+    if (this.props.currentUser.role === 'admin') {
+      newQuery = (
+        <LinkContainer exact to="/queries/new">
+          <NavItem eventKey={2}>New Query</NavItem>
+        </LinkContainer>
+      )
+    }
     return (
       <div className="flex w-100">
         <Navbar inverse fluid fixedTop>
@@ -131,9 +139,7 @@ class App extends React.Component {
             <LinkContainer exact to="/queries">
               <NavItem eventKey={1}>Queries</NavItem>
             </LinkContainer>
-            <LinkContainer exact to="/queries/new">
-              <NavItem eventKey={2}>New Query</NavItem>
-            </LinkContainer>
+            {newQuery}
           </Nav>
           <Nav pullRight>
             {updateNotification()}

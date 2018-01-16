@@ -104,10 +104,11 @@ class App extends React.Component {
             <Route
               exact
               path="/query-table/:queryId"
-              render={({ match }) => (
+              render={({ match, location }) => (
                 <QueryTableOnly
                   config={config}
                   queryId={match.params.queryId}
+                  queryStr={location.search}
                 />
               )}
             />
