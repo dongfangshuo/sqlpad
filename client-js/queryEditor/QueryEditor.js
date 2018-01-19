@@ -15,6 +15,7 @@ import SchemaSidebar from './SchemaSidebar.js'
 import VisSidebar from './VisSidebar'
 import SqlEditor from '../common/SqlEditor'
 import sqlFormatter from 'sql-formatter'
+import Table from '../common/Table'
 import './style.css'
 
 const NEW_QUERY = {
@@ -45,7 +46,8 @@ class QueryEditor extends React.Component {
     runQueryStartTime: undefined,
     showModal: false,
     showValidation: false,
-    listRow: [1]
+    listRow: [1],
+    data: []
   }
 
   sqlpadTauChart = undefined
@@ -145,34 +147,7 @@ class QueryEditor extends React.Component {
     const { query } = this.state
     const { config } = this.props
 
-    let myparameterArray = []
-    let typeArray = []
-    let instructionsArray = []
-    let parArray = []
-
-    let myparameter = document.getElementsByName('myparameter')
-    let mytype = document.getElementsByName('mytype')
-    let instructions = document.getElementsByName('instructions')
-
-    for (let i = 0, j = myparameter.length; i < j; i++) {
-      myparameterArray.push(myparameter[i].value)
-    }
-    for (let i = 0, j = mytype.length; i < j; i++) {
-      typeArray.push(mytype[i].value)
-    }
-    for (let i = 0, j = instructions.length; i < j; i++) {
-      instructionsArray.push(instructions[i].value)
-    }
-    for (let i = 0, j = instructions.length; i < j; i++) {
-      let par = {
-        number1: myparameterArray[i],
-        number2: typeArray[i] === 'volvo' ? 'string' : 'int',
-        number3: instructionsArray[i]
-      }
-      parArray.push(par)
-    }
-
-    this.setQueryState('parameter', parArray)
+    this.setQueryState('parameter', this.state.data)
 
     if (!query.name) {
       Alert.error('Query name required')
@@ -425,16 +400,16 @@ class QueryEditor extends React.Component {
               <SplitPane
                 split="horizontal"
                 minSize={100}
-                defaultSize={'60%'}
-                maxSize={-100}
+                defaultSize={'66%'}
                 onChange={this.handleSqlPaneResize}
               >
-                <SplitPane split="horizontal" minSize={150}>
+                <SplitPane split="horizontal" minSize={150} defaultSize={'66%'}>
                   <div className={'auto'}>
-                    {this.renderList()}
-                    <div className={'button'} onClick={this.addList}>
-                      确认添加
-                    </div>
+                    <Table
+                      data={this.state.data}
+                      onAddRows={this.onAddRows}
+                      onDeleteRows={this.onDeleteRows}
+                    />
                   </div>
                   <SqlEditor
                     config={config}
@@ -526,37 +501,18 @@ class QueryEditor extends React.Component {
     )
   }
 
-  renderList() {
-    const numbers = this.state.listRow
-    const listItems = numbers.map(number => (
-      <li style={{ marginTop: 10 }} key={number}>
-        <input
-          type="text"
-          style={{ width: 120 }}
-          placeholder="参数名称"
-          ref={'myparameter'}
-          name="myparameter"
-        />
-        <select style={{ marginLeft: 5 }} ref={'mytype'} name="mytype">
-          <option value="volvo">string</option>
-          <option value="saab">int</option>
-        </select>
-        <input
-          type="text"
-          style={{ width: 350, marginLeft: 5 }}
-          placeholder="参数说明"
-          ref={'instructions'}
-          name="instructions"
-        />
-      </li>
-    ))
-    return <ol>{listItems}</ol>
+  onAddRows = row => {
+    this.state.data.push(row)
+    this.setState({ data: this.state.data })
   }
-  addList = () => {
-    this.state.listRow.push(
-      this.state.listRow[this.state.listRow.length - 1] + 1
-    )
-    this.setState({ listRow: this.state.listRow })
+
+  onDeleteRows = row => {
+    this.state.data.map(i => {
+      if (i.id === row[0]) {
+        this.state.data.splice(i, 1)
+      }
+    })
+    this.setState({ data: this.state.data })
   }
 }
 
