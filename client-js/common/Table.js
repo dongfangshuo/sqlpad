@@ -21,12 +21,11 @@ class Table extends React.Component {
         deleteRow={true}
         selectRow={selectRowProp}
       >
-        <TableHeaderColumn dataField="id" isKey={true}>
-          ID
+        <TableHeaderColumn dataField="number1" isKey={true}>
+          标识
         </TableHeaderColumn>
-        <TableHeaderColumn dataField="name">标识</TableHeaderColumn>
-        <TableHeaderColumn dataField="type">类型</TableHeaderColumn>
-        <TableHeaderColumn dataField="instructions">说明</TableHeaderColumn>
+        <TableHeaderColumn dataField="number2">类型</TableHeaderColumn>
+        <TableHeaderColumn dataField="number3">说明</TableHeaderColumn>
       </BootstrapTable>
     )
   }
