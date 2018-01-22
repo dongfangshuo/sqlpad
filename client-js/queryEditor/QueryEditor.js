@@ -512,6 +512,7 @@ class QueryEditor extends React.Component {
       if (i.number1 === row[0]) {
         this.state.data.splice(i, 1)
       }
+      return false
     })
     this.setState({ data: this.state.data })
   }
