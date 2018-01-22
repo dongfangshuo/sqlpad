@@ -32,7 +32,6 @@ class QueryListRow extends React.Component {
       str += '&'
       return param
     })
-    console.log(str)
     var tableUrl = `${config.baseUrl}/query-table/${query._id}?` + str
     e.target.parentNode.setAttribute('href', tableUrl)
   }
@@ -60,14 +59,9 @@ class QueryListRow extends React.Component {
 
     const inputs = query.parameter.map(param => {
       return (
-        <div>
-          <span>{param.number3}:</span>
-          <input
-            type="text"
-            style={{ marginLeft: 5 }}
-            ref={param.number1}
-            name={param.number1}
-          />
+        <div className="input-group" style={{ margin: 10 }}>
+          <span className="input-group-addon">{param.number3}</span>
+          <input type="text" className="form-control" ref={param.number1} />
         </div>
       )
     })
@@ -104,7 +98,13 @@ class QueryListRow extends React.Component {
         </form>
         <p>
           <a href={tableUrl} target="_blank" rel="noopener noreferrer">
-            <button onClick={this.handExecClick}>执行</button>
+            <button
+              onClick={this.handExecClick}
+              type="button"
+              class="btn btn-default"
+            >
+              执行
+            </button>
           </a>
         </p>
         {del}

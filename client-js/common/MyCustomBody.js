@@ -11,12 +11,12 @@ class MyCustomBody extends React.Component {
   }
 
   render() {
-    const { columns, validateState } = this.props
+    const { validateState } = this.props
     return (
       <div className="modal-body">
         <div>
           {this.props.columns.map((column, i) => {
-            const { editable, format, field, name, hiddenOnInsert } = column
+            const { field, name } = column
 
             if (name === '类型') {
               return (
