@@ -14,3 +14,17 @@
   text-align: center;
   line-height: 30px;
 }
+.select {
+  border: solid 1px #d9d9d9;
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  background: url('http://ourjs.github.io/static/2015/arrow.png') no-repeat
+    scroll right center transparent;
+  padding-right: 14px;
+  text-indent: 10px;
+}
+/*清除ie的默认选择框样式清除，隐藏下拉箭头*/
+select::-ms-expand {
+  display: none;
+}

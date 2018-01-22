@@ -1,12 +1,24 @@
 import React from 'react'
+import MycustomBody from './MyCustomBody'
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table'
 import 'react-bootstrap-table/dist/react-bootstrap-table.min.css'
 
 class Table extends React.Component {
+  createCustomModalBody = (columns, validateState, ignoreEditable) => {
+    return (
+      <MycustomBody
+        columns={columns}
+        validateState={validateState}
+        ignoreEditable={ignoreEditable}
+      />
+    )
+  }
+
   render() {
     const options = {
       afterInsertRow: this.onAfterInsertRow,
-      onDeleteRow: this.onDeleteRow
+      onDeleteRow: this.onDeleteRow,
+      insertModalBody: this.createCustomModalBody
     }
 
     const selectRowProp = {
