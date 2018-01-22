@@ -34,7 +34,7 @@ class MyCustomBody extends React.Component {
                       className={'select'}
                       ref={field}
                     >
-                      <option value="strign">strign</option>
+                      <option value="string">string</option>
                       <option value="int">int</option>
                     </select>
                   </div>
