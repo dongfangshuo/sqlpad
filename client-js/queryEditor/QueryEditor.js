@@ -87,6 +87,7 @@ class QueryEditor extends React.Component {
         Alert.error(error)
       }
       this.setState({ query })
+      this.setState({ data: query.parameter })
     })
   }
 
@@ -508,7 +509,7 @@ class QueryEditor extends React.Component {
 
   onDeleteRows = row => {
     this.state.data.map(i => {
-      if (i.id === row[0]) {
+      if (i.number1 === row[0]) {
         this.state.data.splice(i, 1)
       }
     })
