@@ -29,10 +29,20 @@ router.get(
           error: 'Query not found for that Id (please save query first)'
         })
       }
+      var parameter = query.parameter
       var queryText = query.queryText.toString()
       console.log('queryText:' + typeof queryText)
       for (var propKey in req.query) {
-        queryText = queryText.replace('@' + propKey, req.query[propKey])
+        for (var i in parameter) {
+          var param = parameter[i]
+          if (param.number1 == propKey) {
+            var val = req.query[propKey]
+            if (param.number2.toLowerCase() == 'string') {
+              val = "'" + val + "'"
+            }
+            queryText = queryText.replace('@' + propKey, val)
+          }
+        }
       }
       console.log('queryText:' + queryText)
       var data = {
@@ -113,7 +123,7 @@ function getConnection(data, next) {
 
 function updateCache(data, next) {
   var now = new Date()
-  var expirationDate = new Date(now.getTime() + 1000 * 60 * 60 * 8) // 8 hours in the future.
+  var expirationDate = new Date(now.getTime() + 0) // 8 hours in the future.
   Cache.findOneByCacheKey(data.cacheKey, function(err, cache) {
     if (err) return next(err)
     if (!cache) {
